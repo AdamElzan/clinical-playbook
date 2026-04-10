@@ -956,6 +956,177 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Ar
 .closing-line{text-align:center;padding:40px 0 0;font-size:12px;color:var(--text-light);letter-spacing:.08em;text-transform:uppercase;border-top:1px solid var(--border);margin-top:52px;}
 .closing-line em{font-style:normal;color:var(--cyan-d);}
 
+
+/* ═══════════════════════════════════════════════════
+   AUDIO PLAYER — Premium Experience
+   Minimalistyczna karta z ukrytym playerem Spreaker
+═══════════════════════════════════════════════════ */
+
+/* Trigger button — widoczny zawsze na okładce */
+.cv-listen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 11px 20px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all .25s ease;
+  text-decoration: none;
+  user-select: none;
+}
+.cv-listen-btn:hover {
+  background: rgba(0,196,212,.1);
+  border-color: rgba(0,196,212,.35);
+  transform: translateY(-1px);
+}
+.cv-listen-btn:active { transform: translateY(0); }
+
+.cv-listen-pulse {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--cyan);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+/* Pulsujący ring gdy player jest otwarty */
+.cv-listen-pulse.playing::after {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--cyan);
+  opacity: 0;
+  animation: audioPulse 1.8s ease-out infinite;
+}
+@keyframes audioPulse {
+  0%   { opacity: .6; transform: scale(1); }
+  100% { opacity: 0;  transform: scale(1.65); }
+}
+.cv-listen-pulse svg {
+  width: 12px; height: 12px;
+  fill: var(--navy);
+  transition: all .2s;
+  margin-left: 1px; /* optyczne wyrównanie trójkąta */
+}
+.cv-listen-pulse.playing svg {
+  /* zmień ikonę na pause gdy gra */
+}
+.cv-listen-text {
+  display: flex; flex-direction: column; gap: 1px;
+}
+.cv-listen-label {
+  font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,.75);
+  letter-spacing: .01em;
+  line-height: 1;
+}
+.cv-listen-meta {
+  font-size: 10px; color: rgba(255,255,255,.3);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Overlay + drawer */
+.audio-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(5, 12, 24, .75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s ease;
+}
+.audio-overlay.open {
+  opacity: 1; pointer-events: all;
+}
+
+.audio-drawer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 1001;
+  background: var(--navy-l);
+  border-top: 1px solid rgba(0,196,212,.15);
+  border-radius: 20px 20px 0 0;
+  padding: 0 0 env(safe-area-inset-bottom, 0);
+  transform: translateY(100%);
+  transition: transform .4s cubic-bezier(.22,.68,0,1.2);
+  max-width: 680px;
+  margin: 0 auto;
+  /* Wyśrodkowanie drawera na szerokich ekranach */
+  left: 50%; transform: translate(-50%, 100%);
+  width: 100%;
+  box-shadow: 0 -8px 48px rgba(0,0,0,.45), 0 0 0 1px rgba(0,196,212,.08);
+}
+.audio-drawer.open {
+  transform: translate(-50%, 0);
+}
+
+/* Uchwyt */
+.audio-handle {
+  width: 36px; height: 4px;
+  background: rgba(255,255,255,.15);
+  border-radius: 2px;
+  margin: 14px auto 0;
+  cursor: pointer;
+  transition: background .2s;
+}
+.audio-handle:hover { background: rgba(0,196,212,.5); }
+
+/* Nagłówek drawera */
+.audio-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 28px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.audio-title-group { display: flex; flex-direction: column; gap: 3px; }
+.audio-series-tag {
+  font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--cyan); font-weight: 600;
+}
+.audio-episode-name {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px; font-weight: 400;
+  color: #fff; line-height: 1.3;
+  max-width: 480px;
+}
+.audio-close {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: all .18s; color: rgba(255,255,255,.6);
+  font-size: 18px; line-height: 1;
+  margin-left: 16px;
+}
+.audio-close:hover {
+  background: rgba(0,196,212,.15);
+  border-color: rgba(0,196,212,.35);
+  color: #fff;
+}
+
+/* Kontener iFrame Spreaker */
+.audio-player-wrap {
+  padding: 16px 28px 24px;
+}
+/* Spreaker domyślnie ma border-radius 0 — nadpisujemy wrapper */
+.audio-player-wrap iframe,
+.audio-player-wrap .spreaker-player {
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+/* Ukryj w druku */
+@media print {
+  .cv-listen-btn,
+  .audio-overlay,
+  .audio-drawer { display: none !important; }
+}
+
 </style>
 </head>
 <body>
@@ -1069,6 +1240,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Ar
           <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/>
         </svg>
         Pobierz jako PDF — otwórz w Chrome, kliknij <strong style="color:rgba(255,255,255,.7)">Drukuj → Zapisz jako PDF</strong>
+      </div>
+      <!-- ── AUDIO PLAYER TRIGGER ── -->
+      <div class="cv-listen-btn" onclick="openAudio()" id="listenTrigger">
+        <div class="cv-listen-pulse" id="listenPulse">
+          <svg viewBox="0 0 10 12" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1.5L9 6L1 10.5V1.5Z"/>
+          </svg>
+        </div>
+        <div class="cv-listen-text">
+          <span class="cv-listen-label">Posłuchaj całej rozmowy</span>
+          <span class="cv-listen-meta">Judith Beck · Spreaker · 58 min</span>
+        </div>
       </div>
       <a href="https://www.harmonja.edu.pl/szkolenia-superwizja.html" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-left:12px;padding:13px 20px;border-radius:8px;border:1px solid rgba(0,196,212,.3);color:var(--cyan);font-size:13px;font-weight:500;text-decoration:none;transition:all .2s;letter-spacing:.02em;">Szkolenia i superwizja dla terapeutów CBT <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
     </div>
@@ -1743,6 +1926,96 @@ window.addEventListener('load',()=>{
   </svg>
   Drukuj / Zapisz PDF
 </button>
+
+
+<!-- ═══ AUDIO OVERLAY ═══ -->
+<div class="audio-overlay" id="audioOverlay" onclick="closeAudio()"></div>
+
+<!-- ═══ AUDIO DRAWER ═══ -->
+<div class="audio-drawer" id="audioDrawer">
+  <div class="audio-handle" onclick="closeAudio()"></div>
+  <div class="audio-header">
+    <div class="audio-title-group">
+      <span class="audio-series-tag">W Głowie się Mieści · Seria I</span>
+      <div class="audio-episode-name">Judith Beck — u źródła terapii poznawczo-behawioralnej</div>
+    </div>
+    <div class="audio-close" onclick="closeAudio()">×</div>
+  </div>
+  <div class="audio-player-wrap" id="audioPlayerWrap">
+    <!-- Player Spreaker ładuje się tutaj dynamicznie -->
+  </div>
+</div>
+
+<script>
+// ── Spreaker script ── ładujemy raz, leniwie
+var _spreakerLoaded = false;
+function loadSpreaker() {
+  if (_spreakerLoaded) return;
+  _spreakerLoaded = true;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://widget.spreaker.com/widgets.js';
+  document.head.appendChild(s);
+}
+
+// ── Wstrzyknij player HTML gdy drawer się otwiera ──
+function injectPlayer() {
+  var wrap = document.getElementById('audioPlayerWrap');
+  if (wrap.innerHTML.trim() !== '') return; // już załadowany
+  wrap.innerHTML =
+    '<a class="spreaker-player"' +
+    ' href="https://www.spreaker.com/episode/judith-beck-u-zrodla-terapii-poznawczo-behawioralnej-what-is-the-key-to-being-a-therapist--60734384"' +
+    ' data-resource="episode_id=60734384"' +
+    ' data-width="100%"' +
+    ' data-height="200px"' +
+    ' data-theme="light"' +
+    ' data-playlist="false"' +
+    ' data-playlist-continuous="false"' +
+    ' data-chapters-image="true"' +
+    ' data-episode-image-position="right"' +
+    ' data-hide-logo="false"' +
+    ' data-hide-likes="false"' +
+    ' data-hide-comments="false"' +
+    ' data-hide-sharing="false"' +
+    ' data-hide-download="true"' +
+    ' data-title="Judith Beck - u źródła terapii poznawczo-behawioralnej">' +
+    'Ładowanie odtwarzacza...</a>';
+  loadSpreaker();
+}
+
+function openAudio() {
+  injectPlayer();
+  document.getElementById('audioOverlay').classList.add('open');
+  document.getElementById('audioDrawer').classList.add('open');
+  document.getElementById('listenPulse').classList.add('playing');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAudio() {
+  document.getElementById('audioOverlay').classList.remove('open');
+  document.getElementById('audioDrawer').classList.remove('open');
+  document.getElementById('listenPulse').classList.remove('playing');
+  document.body.style.overflow = '';
+}
+
+// Zamknij Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeAudio();
+});
+
+// Swipe down zamyka drawer
+(function() {
+  var drawer = document.getElementById('audioDrawer');
+  var startY = 0;
+  drawer.addEventListener('touchstart', function(e) {
+    startY = e.touches[0].clientY;
+  }, {passive:true});
+  drawer.addEventListener('touchend', function(e) {
+    var dy = e.changedTouches[0].clientY - startY;
+    if (dy > 60) closeAudio();
+  }, {passive:true});
+})();
+</script>
 
 </body>
 </html>
